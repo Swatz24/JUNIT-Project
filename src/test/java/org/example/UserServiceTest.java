@@ -1,6 +1,5 @@
 package org.example;
 
-import org.junit.Before;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -32,6 +31,7 @@ public class UserServiceTest {
     @AfterEach
     public void tearDownClass() {
         System.out.println("Compiling this method after testing with @AfterEach");
+        userService = null;
     }
 
     @AfterAll
@@ -52,8 +52,8 @@ public class UserServiceTest {
         boolean result = userService.registerUser(user);
         assertTrue(result); // asserting the result. result will be true if the user is registered successfully.
 
-        // verify() method is used to check if the put() method is called with the following arguments.
-        verify(userDatabase).put("user1", user);
+        // verify() method is used to check if the put() method is called only once with the following arguments.
+        verify(userDatabase, times(1)).put("user1", user);
     }
 
     @Test
@@ -77,7 +77,7 @@ public class UserServiceTest {
         when(userDatabase.containsKey("")).thenReturn(false);
         boolean result = userService.registerUser(user);
         assertTrue(result);
-        verify(userDatabase).put("", user);
+        verify(userDatabase, times(1)).put("", user);
     }
 
     @Test
@@ -124,7 +124,7 @@ public class UserServiceTest {
         assertEquals("1234abcd", user.getPassword());
         assertEquals("user2@gmail.com", user.getEmail());
         // verifying if the put method is called to updated the new updated username.
-        verify(userDatabase).put("user2", user);
+        verify(userDatabase, times(1)).put("user2", user);
     }
 
     @Test
