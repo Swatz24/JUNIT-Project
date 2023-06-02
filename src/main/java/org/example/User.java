@@ -7,6 +7,7 @@ public class User {
     private String username;
     private String password;
     private String email;
+    private double balance; // added this to test user balance before purchase of book.
 
     private List<Book> purchasedBooks = new ArrayList<>();
 
@@ -22,6 +23,14 @@ public class User {
         this.password = password;
         this.email = email;
         this.purchasedBooks = purchasedBooks;
+    }
+
+    // Added new constructor with balance
+    public User(String username, String password, String email, double balance) {
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.balance = balance;
     }
 
     public String getUsername() {
@@ -54,5 +63,14 @@ public class User {
 
     public void setPurchasedBooks(List<Book> purchasedBooks) {
         this.purchasedBooks = purchasedBooks;
+    }
+
+    public void setBalance(double v) {
+        this.balance = v;
+    }
+
+    public double getBalance() {
+        return balance;
+
     }
 }

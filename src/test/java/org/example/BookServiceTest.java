@@ -99,12 +99,24 @@ public class BookServiceTest {
         assertTrue(searchResult.isEmpty());
     }
 
+    @Test
+    @DisplayName("Search Book - Empty Database")
+    public void searchBookEmptyDatabase() {
+        List<Book> books = new ArrayList<>();
+        // Mock up empty database
+        when(bookDatabase.stream()).thenReturn(books.stream());
+
+        // searching empty DB, searchResult should be empty.
+        List<Book> searchResult = bookService.searchBook("Mystery");
+        assertTrue(searchResult.isEmpty());
+    }
+
     // Testing purchaseBook()
 
     @Test
     public void purchaseBookPositive() {
         Book book1 = new Book("Book1", "author1", "Mystery", 20.00);
-        User user = new User("user1", "abcd1234", "user1@gmail.com");
+        User user = new User("user1", "abcd1234", "user1@gmail.com", 25);
         // Setup mock behaviour to return book exists. and then purchase the book.
         when(bookDatabase.contains(book1)).thenReturn(true);
         boolean result = bookService.purchaseBook(user, book1);
@@ -116,10 +128,25 @@ public class BookServiceTest {
     @Test
     public void purchaseBookNegative() {
         Book book1 = new Book("Book1", "author1", "Mystery", 20.00);
-        User user = new User("user1", "abcd1234", "user1@gmail.com");
+        User user = new User("user1", "abcd1234", "user1@gmail.com", 30);
         //   Setup mock behaviour to return book does not exists. and then show book purchase failed.
         when(bookDatabase.contains(book1)).thenReturn(false);
         boolean result = bookService.purchaseBook(user, book1);
+        assertFalse(result);
+    }
+
+    @Test
+    @DisplayName("Purchase Book - Insufficient Funds")
+    public void purchaseBookInsufficientFunds() {
+        Book book1 = new Book("Book1", "author1", "Mystery", 20.00);
+        User user = new User("user1", "abcd1234", "user1@gmail.com");
+        // Setup mock behavior to return book exists.
+        when(bookDatabase.contains(book1)).thenReturn(true);
+        // Set user's balance to a lower value than the book price
+        user.setBalance(10.00);
+        boolean result = bookService.purchaseBook(user, book1);
+
+        // Assert that the book purchase fails due to insufficient funds
         assertFalse(result);
     }
 

@@ -19,7 +19,8 @@ public class BookService {
     public boolean purchaseBook(User user, Book book) {
         // In real world, this should check user's balance, availability of the book, and then make a transaction
         // But for now, we just check if the book exists in our "database"
-        return bookDatabase.contains(book);
+
+        return bookDatabase.contains(book) && user.getBalance() >= book.getPrice();
     }
 
     public boolean addBookReview(User user, Book book, String review) {
