@@ -43,8 +43,8 @@ public class BookServiceTest {
     @Test
     @DisplayName("Search Book by Title - Positive Match")
     public void searchBookTitlePositive() {
-        Book book1 = new Book("Book1", "Author1", "Mystery", 20.95);
-        Book book2 = new Book("Book2", "Author2", "Fantasy", 25.50);
+        Book book1 = new Book("Book1", "Author1", "Mystery", 22);
+        Book book2 = new Book("Book2", "Author2", "Fantasy", 15);
         List<Book> books = new ArrayList<>();
         books.add(book1);
         books.add(book2);
@@ -58,8 +58,8 @@ public class BookServiceTest {
     @Test
     @DisplayName("Search Book by Author - Positive Match")
     public void searchBookAuthorPositive() {
-        Book book1 = new Book("Book1", "Author1", "Mystery", 20.95);
-        Book book2 = new Book("Book2", "Author2", "Fantasy", 25.50);
+        Book book1 = new Book("Book1", "Author1", "Mystery", 22);
+        Book book2 = new Book("Book2", "Author2", "Fantasy", 15);
         List<Book> books = new ArrayList<>();
         books.add(book1);
         books.add(book2);
@@ -73,8 +73,8 @@ public class BookServiceTest {
     @Test
     @DisplayName("Search Book by Genre - Positive Match")
     public void searchBookGenrePositive() {
-        Book book1 = new Book("Book1", "Author1", "Mystery", 20.95);
-        Book book2 = new Book("Book2", "Author2", "Fantasy", 25.50);
+        Book book1 = new Book("Book1", "Author1", "Mystery", 22);
+        Book book2 = new Book("Book2", "Author2", "Fantasy", 15);
         List<Book> books = new ArrayList<>();
         books.add(book1);
         books.add(book2);
@@ -88,8 +88,8 @@ public class BookServiceTest {
     @Test
     @DisplayName("Search Book - Positive Match with OR Condition")
     public void searchBookPositiveAll() {
-        Book book1 = new Book("Book1", "Author1", "Mystery", 20.95);
-        Book book2 = new Book("Book2", "Author2", "Fantasy", 25.50);
+        Book book1 = new Book("Book1", "Author1", "Mystery", 22);
+        Book book2 = new Book("Book2", "Author2", "Fantasy", 15);
         List<Book> books = new ArrayList<>();
         books.add(book1);
         books.add(book2);
@@ -105,8 +105,8 @@ public class BookServiceTest {
     public void searchBookPositiveMultipleBooks() {
 
         // Adding two books of the same author
-        Book book1 = new Book("Book1", "Author1", "Mystery", 20.95);
-        Book book2 = new Book("Book2", "Author1", "Fantasy", 25.50);
+        Book book1 = new Book("Book1", "Author1", "Mystery", 22);
+        Book book2 = new Book("Book2", "Author1", "Fantasy", 15);
         List<Book> books = new ArrayList<>();
         books.add(book1);
         books.add(book2);
@@ -123,8 +123,8 @@ public class BookServiceTest {
     @Test
     @DisplayName("Search Book - No Match")
     public void searchBookNegative() {
-        Book book1 = new Book("Book1", "Author1", "Mystery", 20.95);
-        Book book2 = new Book("Book2", "Author2", "Fantasy", 25.50);
+        Book book1 = new Book("Book1", "Author1", "Mystery", 22);
+        Book book2 = new Book("Book2", "Author2", "Fantasy", 15);
         List<Book> books = new ArrayList<>();
         books.add(book1);
         books.add(book2);
