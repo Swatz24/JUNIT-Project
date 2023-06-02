@@ -28,7 +28,10 @@ public class BookService {
         if (!user.getPurchasedBooks().contains(book)) {
             return false; // User has not purchased this book
         }
-
+        // Updated to return false if there is no review added by the user.
+        if(review.isEmpty()){
+            return false;
+        }
         book.getReviews().add(review);
         return true; // Review added successfully
     }

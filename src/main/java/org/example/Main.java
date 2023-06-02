@@ -1,5 +1,6 @@
 package org.example;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Main {
@@ -8,7 +9,7 @@ public class Main {
         UserService userService = new UserService();
 
         // Creating a new User
-        User newUser = new User("JohnDoe", "password", "johndoe@example.com");
+        User newUser = new User("JohnDoe", "password", "johndoe@example.com", 45);
 
         // Registering the user
         boolean registrationSuccessful = userService.registerUser(newUser);
@@ -46,12 +47,21 @@ public class Main {
 
         // Purchasing a book
         Book bookToPurchase = books.get(0);
+        // added few lines of code, to add the purchased book to the logged in user
+        List<Book> purchasedBook = new ArrayList<>();
+        purchasedBook.add(bookToPurchase);
+        loggedInUser.setPurchasedBooks(purchasedBook);
+//        System.out.println(bookToPurchase.getTitle());
         boolean purchaseSuccessful = bookService.purchaseBook(loggedInUser, bookToPurchase);
         if (purchaseSuccessful) {
             System.out.println("Book purchase successful!");
         } else {
             System.out.println("Book purchase failed. The book might not be available.");
         }
+
+//        System.out.println(loggedInUser.getUsername());
+//        System.out.println(bookToPurchase.getTitle());
+//        System.out.println(loggedInUser.getPurchasedBooks());
 
         // Adding a book review
         boolean reviewAdded = bookService.addBookReview(loggedInUser, bookToPurchase, "Amazing book!");

@@ -262,7 +262,7 @@ public class BookServiceTest {
         @DisplayName("Add Book - Existing Book with Different Price- EdgeCase")
         public void addBookExistingWithDifferentPrice() {
             // Same book but two different prices, so it can be added.
-            Book existingBook = new Book("Book1", "author1", "Mystery", 20.00);
+            Book existingBook = new Book("Book1", "author1", "Mystery", 15.00);
             Book newBookWithDifferentPrice = new Book("Book1", "author1", "Mystery", 25.00);
             // Set up mock behavior for book database, indicating that the existing book already exists
             when(bookDatabase.contains(existingBook)).thenReturn(true);
@@ -274,6 +274,56 @@ public class BookServiceTest {
             verify(bookDatabase, times(1)).add(newBookWithDifferentPrice);
         }
 
+        // Testing addBookReview method
 
+         @Test
+         @DisplayName("Add Book Review - Positive- Book purchased by user")
+         public void addBookReviewPositive() {
+            List<Book> purchasedBooks = new ArrayList<>();
+            Book book = new Book("Book1", "Author1", "Mystery", 35);
+            purchasedBooks.add(book);
+            User user = new User("user1", "abcd1234", "user1@gmail.com", purchasedBooks);
 
+            String review = "Good read!";
+            boolean result = bookService.addBookReview(user, book, review);
+
+            assertTrue(result); // Verify that the review was added since the book was purchased
+            assertTrue(book.getReviews().contains(review)); // Verify that the review is present in the book's reviews list
     }
+
+    @Test
+    @DisplayName("Add Book Review - User Has Not Purchased Book")
+    public void addBookReviewNegative() {
+        List<Book> purchasedBooks = new ArrayList<>();
+        Book book = new Book("Book1", "Author1", "Mystery", 12);
+        User user = new User("user1", "abcd1234", "user1@gmail.com", purchasedBooks);
+
+        String review = "Good read!";
+        boolean result = bookService.addBookReview(user, book, review);
+
+        assertFalse(result); // Verify that the review was not added since the book was not purchased
+        assertFalse(book.getReviews().contains(review)); // Verify that the review is not present in the book's reviews list
+    }
+
+    @Test
+    @DisplayName("Add Book Review - Empty Review")
+    public void addBookReviewEdgeCaseEmptyReview() {
+        List<Book> purchasedBooks = new ArrayList<>();
+        Book book = new Book("Book1", "Author1", "Mystery", 25);
+        purchasedBooks.add(book);
+        User user = new User("user1", "abcd1234", "user1@gmail.com", purchasedBooks);
+
+        String review = ""; // Empty review
+        boolean result = bookService.addBookReview(user, book, review);
+
+        assertFalse(result); // Verify that the review was not added since it is empty
+        assertFalse(book.getReviews().contains(review)); // Verify that the empty review is not present in the book's reviews list
+    }
+
+
+
+
+
+
+
+}
