@@ -7,6 +7,12 @@ public class UserService {
     // A simple map to simulate a database
     private Map<String, User> userDatabase = new HashMap<>();
 
+    public UserService() {
+    }
+
+//    public UserService(Map<String, User> mockUserDatabase) {
+//    }
+
     public boolean registerUser(User user) {
         if (userDatabase.containsKey(user.getUsername())) {
             return false; // User already exists
