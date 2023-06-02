@@ -21,6 +21,12 @@ public class UserServiceTest {
     @InjectMocks
     private UserService userService;
 
+    @BeforeAll
+    public static void setUpAll() {
+        System.out.println("Performing setup operations before all tests with @BeforeAll");
+        // Perform any setup or initialization steps that need to be done once before all tests.
+    }
+
 
     @BeforeEach
     public void setUp(){
@@ -30,17 +36,18 @@ public class UserServiceTest {
 
     @AfterEach
     public void tearDownClass() {
-        System.out.println("Compiling this method after testing with @AfterEach");
+        System.out.println("Compiling this method after each testing block");
         userService = null;
     }
 
     @AfterAll
     public static void tearDown() {
-        System.out.println("Executing clean up operations after each test with @AfterAll");
+        System.out.println("Executing clean up operations after all tests completed.");
     }
 
     // // Testing registerUser Method
     @Test
+    @DisplayName("Register User successful")
     public void registerUserPositive() {
         // Creating a new user for testing the registration process
         User user = new User("user1", "abcd1234", "user1@gmail.com");
@@ -57,6 +64,7 @@ public class UserServiceTest {
     }
 
     @Test
+    @DisplayName("Register User failed")
     public void registerUserNegative() {
         // Creating a new user for testing the registration process
         User user = new User("user1", "abcd1234", "user1@gmail.com");
@@ -70,8 +78,10 @@ public class UserServiceTest {
     }
 
     @Test
+    @DisplayName("Register user - edge case")
     public void registerUserEdge() {
         // creating user with no username. Since the main UserService class accepts user without userName we are checking the edge case to see how it works.
+        // but in general this will throw an error.
         User user = new User("", "abcd1234", "user1@gmail.com");
 
         when(userDatabase.containsKey("")).thenReturn(false);
@@ -81,6 +91,7 @@ public class UserServiceTest {
     }
 
     @Test
+    @DisplayName("Login - successful")
     public void loginUserPositive() {
         // Creating a user.
         User user = new User("user1", "abcd1234", "user1@gmail.com");
@@ -93,7 +104,8 @@ public class UserServiceTest {
     }
 
     @Test
-    public void loginUserNegative_UserNotFound() {
+    @DisplayName("Login failed - User not found")
+    public void loginUserNegative() {
         // mock the behaviour to return null if the user is not found.
         when(userDatabase.get("unknownUser")).thenReturn(null);
         User loggedInUser = userService.loginUser("unknownUser", "pwd1234");
@@ -101,7 +113,8 @@ public class UserServiceTest {
     }
 
     @Test
-    public void loginUserEdge_WrongPassword() {
+    @DisplayName("Login failed - Incorrect password")
+    public void loginUserEdgeCase() {
         // user is present in DB but the password given for login is wrong, so return Null
         User user = new User("user1", "abcd1234", "user1@gmail.com");
         when(userDatabase.get("user1")).thenReturn(user);
@@ -111,6 +124,7 @@ public class UserServiceTest {
     }
 
     @Test
+    @DisplayName("Update user profile - successful")
     public void updateProfilePositive() {
         // Creating new user which we can update later.
         User user = new User("user1", "abcd1234", "user1@gmail.com");
@@ -128,7 +142,8 @@ public class UserServiceTest {
     }
 
     @Test
-    public void updateProfileNegative_UsernameExistsAlready() {
+    @DisplayName("Update User profile - Failed - UsernameExistsAlready")
+    public void updateProfileNegative() {
         User user1 = new User("user1", "abcd1234", "user1@gmail.com");
         // if the new username is already taken, then assert false.
         when(userDatabase.containsKey("user2")).thenReturn(true);
@@ -144,6 +159,7 @@ public class UserServiceTest {
     }
 
     @Test
+    @DisplayName("Update user profile failed - Username already in DB")
     public void updateProfileEdge() {
         User user1 = new User("user1", "abcd1234", "user1@gmail.com");
         // checking to see if any username that is already in DB, should return true.

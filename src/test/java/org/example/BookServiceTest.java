@@ -30,7 +30,7 @@ public class BookServiceTest {
 
     @AfterAll
     public static void tearDownClass() {
-        System.out.println("Cleaning up after testing with @AfterAll");
+        System.out.println("Cleaning up after all testing with @AfterAll");
     }
 
     @AfterEach
@@ -86,6 +86,41 @@ public class BookServiceTest {
     }
 
     @Test
+    @DisplayName("Search Book - Positive Match with OR Condition")
+    public void searchBookPositiveAll() {
+        Book book1 = new Book("Book1", "Author1", "Mystery", 20.95);
+        Book book2 = new Book("Book2", "Author2", "Fantasy", 25.50);
+        List<Book> books = new ArrayList<>();
+        books.add(book1);
+        books.add(book2);
+        when(bookDatabase.stream()).thenReturn(books.stream());
+
+        List<Book> results = bookService.searchBook("Author1");
+        assertEquals(1, results.size());
+        assertTrue(results.contains(book1));
+    }
+
+    @Test
+    @DisplayName("Search Book - Positive Match with OR Condition")
+    public void searchBookPositiveMultipleBooks() {
+
+        // Adding two books of the same author
+        Book book1 = new Book("Book1", "Author1", "Mystery", 20.95);
+        Book book2 = new Book("Book2", "Author1", "Fantasy", 25.50);
+        List<Book> books = new ArrayList<>();
+        books.add(book1);
+        books.add(book2);
+        when(bookDatabase.stream()).thenReturn(books.stream());
+
+        // Searching books of Author1
+        List<Book> results = bookService.searchBook("Author1");
+        // Assert result size should be 2, as there are two books with same author and the results List should contain both the books.
+        assertEquals(2, results.size());
+        assertTrue(results.contains(book1));
+        assertTrue(results.contains(book2));
+    }
+
+    @Test
     @DisplayName("Search Book - No Match")
     public void searchBookNegative() {
         Book book1 = new Book("Book1", "Author1", "Mystery", 20.95);
@@ -100,7 +135,7 @@ public class BookServiceTest {
     }
 
     @Test
-    @DisplayName("Search Book - Empty Database")
+    @DisplayName("Search Book - Empty Database- Edge case")
     public void searchBookEmptyDatabase() {
         List<Book> books = new ArrayList<>();
         // Mock up empty database
@@ -136,7 +171,7 @@ public class BookServiceTest {
     }
 
     @Test
-    @DisplayName("Purchase Book - Insufficient Funds")
+    @DisplayName("Purchase Book - Insufficient Funds- Edge Case")
     public void purchaseBookInsufficientFunds() {
         Book book1 = new Book("Book1", "author1", "Mystery", 20.00);
         User user = new User("user1", "abcd1234", "user1@gmail.com");
@@ -152,6 +187,7 @@ public class BookServiceTest {
 
     // Testing remove book function.
     @Test
+    @DisplayName("Remove Book - Positive")
     public void removeBookPositive() {
         Book book1 = new Book("Book1", "author1", "Mystery", 20.00);
         // Mock the behaviour to say that the book is in the DB
@@ -166,6 +202,7 @@ public class BookServiceTest {
     }
 
     @Test
+    @DisplayName("Remove Book - Negative")
     public void removeBookNegative() {
         Book book1 = new Book("Book1", "author1", "Mystery", 20.00);
         // Mock the behaviour to show that the book is not in the DB
@@ -178,9 +215,23 @@ public class BookServiceTest {
         verify(bookDatabase).remove(book1);
     }
 
+    @Test
+    @DisplayName("Remove Book - Null Book")
+    // edgeCase trying to remove null
+    public void removeBookNull() {
+            // Passing null as the book to be removed
+            boolean result = bookService.removeBook(null);
+            // Assert false means the book is not removed.
+            assertFalse(result);
+            // Verify that the remove() method of the book DB was not called with a non-null argument
+            verify(bookDatabase, never()).remove(isNotNull());
+    }
+
+
   // Testing addBook Method
 
     @Test
+    @DisplayName("Add Book - Positive")
     public void addBookPositive() {
         Book book1 = new Book("Book1", "author1", "Mystery", 20.00);
         //set up mock behavior for book database , the book1 doesn't exist already.
@@ -194,6 +245,7 @@ public class BookServiceTest {
     }
 
     @Test
+    @DisplayName("Add Book - Negative")
     public void addBookNegative() {
         Book book1 = new Book("Book1", "author1", "Mystery", 20.00);
         //set up mock behavior for book database , the book1 exist already.
@@ -206,20 +258,22 @@ public class BookServiceTest {
         verify(bookDatabase, never()).add(book1);
     }
 
-    @Test
-    public void addBookEdge() {
+        @Test
+        @DisplayName("Add Book - Existing Book with Different Price- EdgeCase")
+        public void addBookExistingWithDifferentPrice() {
+            // Same book but two different prices, so it can be added.
+            Book existingBook = new Book("Book1", "author1", "Mystery", 20.00);
+            Book newBookWithDifferentPrice = new Book("Book1", "author1", "Mystery", 25.00);
+            // Set up mock behavior for book database, indicating that the existing book already exists
+            when(bookDatabase.contains(existingBook)).thenReturn(true);
+            // Calling the method with the new book that has a different price
+            boolean result = bookService.addBook(newBookWithDifferentPrice);
+            // Assert true since the book is added
+            assertTrue(result);
+            // Verify that add() is called with the new book as an argument
+            verify(bookDatabase, times(1)).add(newBookWithDifferentPrice);
+        }
 
-        // Test adding a new book to the empty database
-        Book book2 = new Book("Book2", "author2", "Thriller", 15.00);
-        // Set up mock behavior for book database, the book2 doesn't exist already.
-        when(bookDatabase.contains(book2)).thenReturn(false);
-        // Calling the method with book2 as an argument
-        boolean result2 = bookService.addBook(book2);
-        // Assert true since the book is added successfully.
-        assertTrue(result2);
-        // Verify if the add method is called with the book2 as an argument only once.
-        verify(bookDatabase, times(1)).add(book2);
+
+
     }
-
-
-}
